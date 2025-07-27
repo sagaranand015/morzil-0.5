@@ -20,8 +20,11 @@ import BarChart from "./pages/Charts/BarChart";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
+import { useGreetScheduler } from "./services/greet";
 
 export default function App() {
+  useGreetScheduler("10000"); // 10 seconds in milliseconds
+
   return (
     <>
       <Router>

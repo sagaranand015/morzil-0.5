@@ -1,10 +1,45 @@
+import { useState } from "react";
+
+import { invoke } from '@tauri-apps/api/core';
+
 import ComponentCard from "../../components/common/ComponentCard";
 import PageBreadcrumb from "../../components/common/PageBreadCrumb";
 import PageMeta from "../../components/common/PageMeta";
 import Button from "../../components/ui/button/Button";
 import { BoxIcon } from "../../icons";
 
+
 export default function Buttons() {
+
+  // const { sendHelloWorld, greet } = useTauri();
+  const [response, setResponse] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const greet = async (name: string): Promise<string> => {
+    try {
+      const response = await invoke<string>('greet', { name });
+      console.log('Greet response from Tauri backend:', response);
+      return response;
+    } catch (error) {
+      console.error('Error calling greet command:', error);
+      throw error;
+    }
+  };
+
+  const handleGreet = async () => {
+    setLoading(true);
+    try {
+      const result = await greet("Tauri User");
+      setResponse(result);
+      console.log("Frontend received:", result);
+    } catch (error) {
+      console.error("Error:", error);
+      setResponse("Error occurred while calling backend");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <PageMeta
@@ -16,8 +51,8 @@ export default function Buttons() {
         {/* Primary Button */}
         <ComponentCard title="Primary Button">
           <div className="flex items-center gap-5">
-            <Button size="sm" variant="primary">
-              Button Text
+            <Button size="sm" variant="primary" onClick={handleGreet} >
+              Demo Button
             </Button>
             <Button size="md" variant="primary">
               Button Text
